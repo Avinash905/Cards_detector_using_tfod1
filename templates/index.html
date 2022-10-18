@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tf1 cards detector</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        background-color: rgb(255, 192, 114);
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100vw;
+        justify-content: center;
+        color: white;
+      }
+
+      .content {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .heading {
+        text-align: center;
+        margin: 30px;
+        font-size: 45px;
+      }
+
+      .input {
+        margin: 0 80px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .input-part video {
+        display: block;
+      }
+
+      #input-photo {
+        height: 380px;
+      }
+
+      .form {
+        margin-top: 10px;
+      }
+
+      input::file-selector-button {
+        color: white;
+        background-color: rgb(255, 88, 88);
+        border-radius: 4px;
+        border-style: none;
+        padding: 5px;
+      }
+
+      input::file-selector-button:hover {
+        transform: scale(0.95);
+      }
+
+      .btn-part {
+        margin: 15px 0;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .upload-btn {
+        margin: 5px;
+        padding: 10px 57px;
+        border-style: none;
+        border-radius: 4px;
+        background-color: #a35d01;
+        color: white;
+        font-size: 1em;
+        width: 100%;
+      }
+
+      .upload-btn:hover {
+        transform: scale(0.95);
+      }
+
+      #fileinput {
+        position: absolute;
+        top: -500px;
+      }
+
+      .predict-btn {
+        margin: 5px;
+        padding: 10px 57px;
+        border-style: none;
+        border-radius: 4px;
+        background-color: #a35d01;
+        color: white;
+        font-size: 1em;
+        width: 100%;
+      }
+
+      .predict-btn:hover {
+        transform: scale(0.95);
+      }
+
+      .output {
+        margin: 0 40px;
+        padding: 10px;
+        padding-right: 38px;
+        border: 1px solid grey;
+        width: 480px;
+        height: 425px;
+      }
+
+      .prediction-heading {
+        margin: 2px 10px;
+        text-align: center;
+        font-size: 25px;
+      }
+
+      .otpt {
+        display: flex;
+      }
+
+      .predicted-image {
+        border: 1px solid grey;
+        width: 100%;
+        height: 350px;
+        margin: 10px;
+      }
+
+      .resp-img {
+        width: 400px;
+        height: 370px;
+      }
+
+      pre {
+        font-size: 15px;
+      }
+
+      .pred-output {
+        border: 1px solid grey;
+        height: 380x;
+        margin: 10px;
+        padding: 9px;
+      }
+
+      footer {
+        position: fixed;
+        margin: 0;
+        padding-top: 3px;
+        width: 100%;
+        bottom: 0;
+        height: 22px;
+        background-color: #a35d01;
+        text-align: center;
+      }
+
+      #loading {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999999999;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #675306;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        left: 50%;
+        margin-left: -4em;
+        display: block;
+        animation: spin 2s linear infinite;
+      }
+      .loader,
+      .loader:after {
+        display: block;
+        position: absolute;
+        top: 50%;
+        margin-top: -4.05em;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box">
+        <h1 class="heading">Cards Detector</h1>
+        <div class="content">
+          <div class="input">
+            <div class="image-part">
+              <video
+                autoplay
+                poster="https://images.pexels.com/photos/1479465/pexels-photo-1479465.jpeg?auto=compress&cs=tinysrgb&w=500"
+                id="video"
+              ></video>
+              <img id="input-photo" src="" />
+            </div>
+
+            <form class="form">
+              <div class="btn-part">
+                <button class="upload-btn" id="upload" type="button">
+                  Upload
+                </button>
+                <button class="predict-btn" id="send" type="button">
+                  Predict
+                </button>
+              </div>
+              <input
+                type="hidden"
+                class="form-control"
+                id="url"
+                placeholder="Enter REST Api url..."
+                value="../predict"
+              />
+              <input type="file" id="fileinput" name="upload" />
+            </form>
+          </div>
+          <div class="output">
+            <h5 class="prediction-heading">Prediction Results</h5>
+            <div class="otpt">
+              <div class="predicted-image"></div>
+              <div class="pred-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer>Made by Avinash</footer>
+      <div id="loading"><div class="loader"></div></div>
+    </div>
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.6.1.min.js"
+    integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    let base_data = "";
+    function sendRequest(base64Data) {
+      let type = "json";
+      if (base64Data != "" || base64Data != null) {
+        if (type == "imgtobase") {
+          document.querySelector(".pred-output").innerHTML = "";
+          document.querySelector(".pred-output").innerHTML = base64Data;
+        } else if (type == "basetoimg") {
+          let imageData = document.querySelector("#imgstring").value;
+          document.querySelector(".pred-output").innerHTML = "";
+          document
+            .querySelector(".pred-output")
+            .insertAdjacentHTML(
+              "beforeend",
+              "<img src='data:image/jpg;base64," + imageData + "' alt='' />"
+            );
+        } else {
+          let url = document.querySelector("#url").value;
+          document.querySelector("#loading").style.display = "";
+
+          $.ajax({
+            url: url,
+            type: "post",
+            cache: false,
+            async: true,
+            crossDomain: true,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+            data: JSON.stringify({ image: base64Data }),
+            success: function (res) {
+              $(".pred-output").html("");
+              $(".predicted-image").html("");
+              var imageData = res[Object.keys(res).length - 1].image;
+              $(".predicted-image").append(
+                "<img class='resp-img' src='data:image/jpg;base64," +
+                  imageData +
+                  "' alt='' />"
+              );
+              let arr = [];
+              for (let i = 0; i < Object.keys(res).length - 1; i++) {
+                arr = arr + i + 1 + "." + res[i]["className"] + "\n";
+              }
+              $(".pred-output").html("<pre>" + arr + "</pre>");
+              $("#loading").hide();
+            },
+          });
+        }
+      }
+    }
+
+    $(document).ready(function () {
+      document.querySelector("#loading").style.display = "none";
+
+      document
+        .querySelector("#upload")
+        .addEventListener("click", function (evt) {
+          $("#fileinput").focus().trigger("click");
+        });
+
+      document.querySelector("#send").addEventListener("click", function (evt) {
+        sendRequest(base_data);
+      });
+
+      document
+        .querySelector("#fileinput")
+        .addEventListener("change", function () {
+          if (this.files && this.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+              let url = e.target.result;
+              let img = new Image();
+              img.crossOrigin = "Anonymous";
+              img.onload = function () {
+                let canvas = document.createElement("CANVAS");
+                let ctx = canvas.getContext("2d");
+                canvas.height = this.height;
+                canvas.width = this.width;
+                ctx.drawImage(this, 0, 0);
+                base_data = canvas
+                  .toDataURL("image/jpeg", 1.0)
+                  .replace(/^data:image.+;base64,/, "");
+                canvas = null;
+              };
+              img.src = url;
+              document.querySelector("#input-photo").setAttribute("src", url);
+              document.querySelector("#input-photo").style.display = "";
+              document.querySelector("#video").style.display = "none";
+            };
+            reader.readAsDataURL(this.files[0]);
+          }
+        });
+    });
+  </script>
+</html>
