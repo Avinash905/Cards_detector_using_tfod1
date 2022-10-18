@@ -10,9 +10,7 @@ This web application detects the following cards:
 * Nine
 * Ten
 
-Check out the web application at: 
-
-If the above link doesn't work then follow the steps below to run this application on your local machine:
+Follow the steps below to run this application on your local machine:
 
 1. Create a python environment 
    ```bash
