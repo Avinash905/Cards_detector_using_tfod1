@@ -294,7 +294,8 @@
               );
               let arr = [];
               for (let i = 0; i < Object.keys(res).length - 1; i++) {
-                arr = arr + i + 1 + "." + res[i]["className"] + "\n";
+                let x = i + 1;
+                arr = arr + x + "." + res[i]["className"] + "\n";
               }
               $(".pred-output").html("<pre>" + arr + "</pre>");
               $("#loading").hide();
