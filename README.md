@@ -1,8 +1,6 @@
 ## Cards_detector_using_tfod1
 
-This is an object detection project which uses tensorflow 1.x to detect the 
-
-This web application detects the following cards:
+This is an object detection project which uses tensorflow 1.x to detect the following cards:
 * King
 * Jack
 * Queen
